@@ -1,5 +1,6 @@
 import {Music4} from 'lucide-react'
 import SearchComponent from '../components/SearchComponent';
+import { FilterComponent } from '../components/FilterComponent';
 
 function Index() {
   return (
@@ -21,6 +22,7 @@ function Index() {
             </div>
           </div>
             <SearchComponent/>
+            <FilterComponent/>
         </div>
       </header>
       <main>
