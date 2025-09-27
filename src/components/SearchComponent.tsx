@@ -1,6 +1,6 @@
 import { Card } from "../UI/Card";
 import { useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "../UI/Input";
 
 function SearchComponent() {
@@ -8,7 +8,7 @@ function SearchComponent() {
     const onSearchChange = (query: string) => {
         setSearchQuery(query);
     }
-    return <Card className="p-4 bg-card border-border/30 shadow-search">
+    return <Card className="p-4 bg-card border border-border/50 shadow-sm rounded-xl">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
