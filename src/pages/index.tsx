@@ -1,7 +1,30 @@
-import {Music4} from 'lucide-react'
+import {CloudCog, Music4} from 'lucide-react'
 import SearchComponent from '../components/SearchComponent';
+import { useEffect, useState } from 'react';
+import { fetchSongs } from '../api/song';
+import type { Song, SongQuery, SongResponse } from '../interface/song';
 
 function Index() {
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function fetchData(query: SongQuery) {
+    setLoading(true);
+    try {
+      const response: SongResponse = await fetchSongs(query);
+      setSongs(response.songs);
+      console.log(response);
+      setError(null);
+    } catch (error) {
+      setError('Failed to fetch songs');
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData({ page: 1, page_size: 10 });
+  }, []);
   return (
     <div className="flex min-h-screen flex-col ">
       <header className="bg-card border-b border-border/30 shadow-sm">
