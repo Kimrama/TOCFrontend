@@ -6,11 +6,13 @@ export interface SongQuery {
     lyrics?: string;
 }
 export interface Song {
-    song: number;
+    song: string;
     singer: string;
     lyrics: string;
     chords_image: string;
+    coverUrl: string;
 }
+export type TabKey = "lyrics" | "chords";
 
 export interface SongResponse {
   count: number;
