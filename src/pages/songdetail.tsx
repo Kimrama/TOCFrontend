@@ -4,7 +4,7 @@ import { ArrowLeft, Eye, FileText, Guitar, User } from "lucide-react";
 import type { TabKey } from "../interface/song";
 import { demoSong } from "../data/demoSong";
 
-import AppHeader from "../UI/AppHeader";
+import { Link } from "react-router-dom";
 import PageFooter from "../UI/PageFooter";
 import Cover from "../UI/Cover";
 import Badge from "../UI/Badge";
@@ -34,13 +34,19 @@ export default function SongDetail() {
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <AppHeader/>
+    
 
       <main className="mx-auto max-w-6xl px-4 py-8 md:px-6">
         {/* Back + breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-sm text-neutral-600">
-          <ArrowLeft size={16} />
-          <span>Back to songs</span>
+          <Link
+              to="/"
+              className="inline-flex items-center gap-2 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300 rounded-md px-1"
+              aria-label="Back to songs"
+            >
+            <ArrowLeft size={16} />
+            <span>Back to songs</span>
+          </Link>
           <span className="mx-1">/</span>
           <span className="font-medium text-neutral-900">{demoSong.song}</span>
         </div>
