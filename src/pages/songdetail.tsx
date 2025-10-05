@@ -54,7 +54,7 @@ export default function SongDetail() {
         <section className="grid grid-cols-1 gap-6 md:grid-cols-[260px,1fr]">
           {/* Left: Cover & meta */}
           <div className="space-y-4">
-            <Cover coverUrl={demoSong.coverUrl} />
+            <Cover coverUrl={demoSong.song_transcriber} />
 
             <div className="grid grid-cols-2 gap-3">
               <Badge icon={User} label={demoSong.singer} />

@@ -7,9 +7,11 @@ interface SectionProps {
   subtitle?: string;
   icon: ReactNode;
   children: ReactNode;
+  onNextPage?: () => void;
+  onPrevPage?: () => void;
 }
 
-export function Section({ title, subtitle, icon, children }: SectionProps) {
+export function Section({ title, subtitle, icon, children, onNextPage, onPrevPage }: SectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -20,7 +22,15 @@ export function Section({ title, subtitle, icon, children }: SectionProps) {
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+
+      const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+
+      if (isAtEnd && onNextPage) {
+        onNextPage();
+      } else {
+        scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      }
     }
   };
 

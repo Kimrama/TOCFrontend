@@ -4,13 +4,15 @@ export interface SongQuery {
     song?: string;
     singer?: string;
     lyrics?: string;
+    popular?: boolean;
 }
 export interface Song {
     song: string;
     singer: string;
     lyrics: string;
+    views: number;
     chords_image: string;
-    coverUrl: string;
+    song_transcriber: string;
 }
 export type TabKey = "lyrics" | "chords";
 

@@ -9,6 +9,7 @@ export async function fetchSongs(query: SongQuery): Promise<SongResponse> {
     query.song = query.song || '';
     query.singer = query.singer || '';
     query.lyrics = query.lyrics || '';
+    query.popular = query.popular;
 
     const response = await axios.get(`${BASE_URL}/songs`, { params: query });
     return response.data;

@@ -1,3 +1,5 @@
+// src/pages/Index.tsx
+
 import { useEffect, useState } from 'react';
 import { fetchSongs } from '../api/song';
 import type { Song, SongQuery, SongResponse } from '../interface/song';
@@ -8,26 +10,57 @@ import { SongCard } from '../UI/SongCard';
 import { Section } from '../UI/Section';
 
 function Index() {
+  const [popularSongs, setPopularSongs] = useState<Song[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
+  const [popularPage, setPopularPage] = useState(1);
+  const [songsPage, setSongsPage] = useState(1);
+  const pageSize = 10;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchData(query: SongQuery) {
+  async function fetchPopularSongs(page: number) {
     setLoading(true);
     try {
-      const response: SongResponse = await fetchSongs(query);
-      setSongs(response.songs);
-      console.log(response);
+      const response: SongResponse = await fetchSongs({ page, page_size: pageSize, popular: true });
+      setPopularSongs(prevSongs => [...prevSongs, ...response.songs]);
       setError(null);
-    } catch (error) {
+    } catch (err) {
+      setError('Failed to fetch popular songs');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchAllSongs(page: number) {
+    setLoading(true);
+    try {
+      const response: SongResponse = await fetchSongs({ page, page_size: pageSize, popular: false });
+      setSongs(prevSongs => [...prevSongs, ...response.songs]);
+      setError(null);
+    } catch (err) {
       setError('Failed to fetch songs');
     } finally {
       setLoading(false);
     }
-  };
+  }
   useEffect(() => {
-    fetchData({ page: 1, page_size: 10 });
-  }, []);
+    fetchPopularSongs(popularPage);
+    fetchAllSongs(songsPage);
+  }, []); 
+
+  const handleNextPopularPage = () => {
+    const nextPage = popularPage + 1;
+    setPopularPage(nextPage);
+    fetchPopularSongs(nextPage);
+  };
+
+  const handleNextSongsPage = () => {
+    const nextPage = songsPage + 1;
+    setSongsPage(nextPage);
+    fetchAllSongs(nextPage);
+  };
+
+
   return (
     <div className="flex min-h-screen flex-col ">
       <header className="bg-card border-b border-border/30 shadow-sm">
@@ -51,241 +84,42 @@ function Index() {
         </div>
       </header>
       <main className="bg-gray-50">
-        {/* Hit Songs */}
-        <Section title="Hit Songs" subtitle="Most played tracks with highest view count" icon={<Eye />}>
-          <SongCard
-            title="Dancing Queen"
-            artist="Pop Stars"
-            genre="Pop"
-            year="2023"
-            duration="3:21"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Bubble Pop"
-            artist="Sweet Melody"
-            genre="Pop"
-            year="2023"
-            duration="3:12"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="City Lights"
-            artist="Urban Flow"
-            genre="Hip-hop"
-            year="2023"
-            duration="3:28"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Midnight Frequencies"
-            artist="Neon Pulse"
-            genre="Electronic"
-            year="2023"
-            duration="3:42"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Dancing Queen"
-            artist="Pop Stars"
-            genre="Pop"
-            year="2023"
-            duration="3:21"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Bubble Pop"
-            artist="Sweet Melody"
-            genre="Pop"
-            year="2023"
-            duration="3:12"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="City Lights"
-            artist="Urban Flow"
-            genre="Hip-hop"
-            year="2023"
-            duration="3:28"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Midnight Frequencies"
-            artist="Neon Pulse"
-            genre="Electronic"
-            year="2023"
-            duration="3:42"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Dancing Queen"
-            artist="Pop Stars"
-            genre="Pop"
-            year="2023"
-            duration="3:21"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Bubble Pop"
-            artist="Sweet Melody"
-            genre="Pop"
-            year="2023"
-            duration="3:12"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="City Lights"
-            artist="Urban Flow"
-            genre="Hip-hop"
-            year="2023"
-            duration="3:28"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Midnight Frequencies"
-            artist="Neon Pulse"
-            genre="Electronic"
-            year="2023"
-            duration="3:42"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
+        <Section
+          title="Popular Songs"
+          subtitle="Tracks that are trending and most played"
+          icon={<Eye />}
+          onNextPage={handleNextPopularPage}
+        >
+          {
+            popularSongs.map((song, index) => ( 
+              <SongCard
+                key={index} 
+                title={song.song}
+                singer={song.singer}
+                views={song.views}
+                image={song.song_transcriber}
+              />
+            ))
+          }
         </Section>
 
-
-        {/* High Score Songs */}
-        <Section title="High Score Songs" subtitle="Top-rated songs with the best scores" icon={<Star />}>
-          <SongCard
-            title="Symphony No. 9"
-            artist="Classical Ensemble"
-            genre="Classical"
-            year="2020"
-            duration="8:45"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Golden Hour"
-            artist="Sunset Drive"
-            genre="Indie Rock"
-            year="2021"
-            duration="4:03"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Midnight Frequencies"
-            artist="Neon Pulse"
-            genre="Electronic"
-            year="2023"
-            duration="3:42"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Moonlight Sonata"
-            artist="Piano Masters"
-            genre="Classical"
-            year="2021"
-            duration="6:12"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Symphony No. 9"
-            artist="Classical Ensemble"
-            genre="Classical"
-            year="2020"
-            duration="8:45"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Golden Hour"
-            artist="Sunset Drive"
-            genre="Indie Rock"
-            year="2021"
-            duration="4:03"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Midnight Frequencies"
-            artist="Neon Pulse"
-            genre="Electronic"
-            year="2023"
-            duration="3:42"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Moonlight Sonata"
-            artist="Piano Masters"
-            genre="Classical"
-            year="2021"
-            duration="6:12"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-        </Section>
-
-        {/* Latest Releases */}
-        <Section title="Latest Releases" subtitle="Newest release from this year" icon={<Clock />}>
-          <SongCard
-            title="New Beats"
-            artist="DJ Fresh"
-            genre="Electronic"
-            year="2024"
-            duration="3:50"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Summer Breeze"
-            artist="Ocean Vibes"
-            genre="Pop"
-            year="2024"
-            duration="3:40"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="New Beats"
-            artist="DJ Fresh"
-            genre="Electronic"
-            year="2024"
-            duration="3:50"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Summer Breeze"
-            artist="Ocean Vibes"
-            genre="Pop"
-            year="2024"
-            duration="3:40"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="New Beats"
-            artist="DJ Fresh"
-            genre="Electronic"
-            year="2024"
-            duration="3:50"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Summer Breeze"
-            artist="Ocean Vibes"
-            genre="Pop"
-            year="2024"
-            duration="3:40"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="New Beats"
-            artist="DJ Fresh"
-            genre="Electronic"
-            year="2024"
-            duration="3:50"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
-          <SongCard
-            title="Summer Breeze"
-            artist="Ocean Vibes"
-            genre="Pop"
-            year="2024"
-            duration="3:40"
-            image="https://images.macrumors.com/t/MKlRm9rIBpfcGnjTpf6ZxgpFTUg=/1600x1200/smart/article-new/2018/05/apple-music-note.jpg"
-          />
+        <Section
+          title="Songs"
+          subtitle="Browse the rest of the tracks"
+          icon={<Music4 />} 
+          onNextPage={handleNextSongsPage}
+        >
+          {
+            songs.map((song, index) => (
+              <SongCard
+                key={index}
+                title={song.song}
+                singer={song.singer}
+                views={song.views}
+                image={song.song_transcriber}
+              />
+            ))
+          }
         </Section>
       </main>
     </div>
