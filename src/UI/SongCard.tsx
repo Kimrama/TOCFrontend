@@ -2,19 +2,15 @@ import { Card } from "./Card";
 
 interface SongCardProps {
   title: string;
-  artist: string;
-  genre: string;
-  year: string;
-  duration: string;
+  singer: string;
+  views: number;
   image: string;
 }
 
 export function SongCard({
   title,
-  artist,
-  genre,
-  year,
-  duration,
+  singer,
+  views,
   image,
 }: SongCardProps) {
   return (
@@ -34,14 +30,10 @@ export function SongCard({
           {title}
         </h3>
 
-        <p className="text-xs text-muted-foreground ">{artist}</p>
+        <p className="text-xs text-muted-foreground ">{singer}</p>
 
         <p className="text-xs text-muted-foreground mt-3">
-          <span>{genre}</span>
-          <span className="mx-2">•</span>
-          <span>{year}</span>
-          <span className="mx-2">•</span>
-          <span>{duration}</span>
+          <span>{views} views</span>
         </p>
       </div>
     </Card>

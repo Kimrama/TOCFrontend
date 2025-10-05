@@ -7,9 +7,11 @@ interface SectionProps {
   subtitle?: string;
   icon: ReactNode;
   children: ReactNode;
+  onNextPage?: () => void;
+  onPrevPage?: () => void;
 }
 
-export function Section({ title, subtitle, icon, children }: SectionProps) {
+export function Section({ title, subtitle, icon, children, onNextPage, onPrevPage }: SectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scrollLeft = () => {
@@ -20,13 +22,22 @@ export function Section({ title, subtitle, icon, children }: SectionProps) {
 
   const scrollRight = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      
+      const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+
+      if (isAtEnd && onNextPage) {
+        onNextPage();
+      } else {
+        scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+      }
     }
   };
 
   return (
     <section className="container mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-6">
+        {/* ... โค้ดส่วนหัวของ Section เหมือนเดิม ... */}
         <div className="flex items-center gap-3 mb-2">
           <div className="p-2 rounded-full bg-muted flex items-center justify-center">
             {icon}

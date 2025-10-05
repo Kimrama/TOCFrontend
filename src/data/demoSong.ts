@@ -7,6 +7,7 @@ import type { Song } from "../interface/song";
 export const demoSong: Song = {
 song: "Midnight Frequencies",
 singer: "Neon Pulse",
+views: 12500,
 chords_image: "https://chordtabs.in.th/img/nm/56633.png", // ใช้กราเดียนท์แทนรูปจริง
 lyrics: `
 City lights flicker in my eyes
@@ -35,5 +36,5 @@ Hold me close in electric dreams
 
 Wave on wave, you carry me
 `,
-coverUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+song_transcriber: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
 };
