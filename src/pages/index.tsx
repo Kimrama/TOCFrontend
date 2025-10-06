@@ -6,6 +6,7 @@ import SearchComponent from "../components/SearchComponent";
 import { FilterComponent } from "../components/FilterComponent";
 import { SongCard } from "../UI/SongCard";
 import { Section } from "../UI/Section";
+import { Link } from "react-router-dom";
 
 function Index() {
   const [popularSongs, setPopularSongs] = useState<Song[]>([]);
@@ -118,13 +119,22 @@ function Index() {
           onNextPage={handleNextPopularPage}
         >
           {popularSongs.map((song, index) => (
-            <SongCard
-              key={index}
-              title={song.song}
-              singer={song.singer}
-              views={song.views}
-              image={song.song_transcriber}
-            />
+            <Link
+              to={`/song/${encodeURIComponent(song.song)}`}
+              state={{
+                from: "internal",
+                song: song,
+                image: song.song_transcriber,
+              }}
+            >
+              <SongCard
+                key={index}
+                title={song.song}
+                singer={song.singer}
+                views={song.views}
+                image={song.song_transcriber}
+              />
+            </Link>
           ))}
         </Section>
 
@@ -135,13 +145,22 @@ function Index() {
           onNextPage={handleNextSongsPage}
         >
           {songs.map((song, index) => (
-            <SongCard
-              key={index}
-              title={song.song}
-              singer={song.singer}
-              views={song.views}
-              image={song.song_transcriber}
-            />
+            <Link
+              to={`/song/${encodeURIComponent(song.song)}`}
+              state={{
+                from: "internal",
+                song: song,
+                image: song.song_transcriber,
+              }}
+            >
+              <SongCard
+                key={index}
+                title={song.song}
+                singer={song.singer}
+                views={song.views}
+                image={song.song_transcriber}
+              />
+            </Link>
           ))}
         </Section>
       </main>

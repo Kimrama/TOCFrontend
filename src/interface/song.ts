@@ -11,7 +11,7 @@ export interface Song {
     singer: string;
     lyrics: string;
     views: number;
-    chords_image: string;
+    chord_image: string;
     song_transcriber: string;
 }
 export type TabKey = "lyrics" | "chords";
