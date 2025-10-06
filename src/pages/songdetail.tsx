@@ -11,7 +11,8 @@ import Cover from "../UI/Cover";
 import Badge from "../UI/Badge";
 import Stat from "../UI/Stat";
 import CopyButton from "../UI/CopyButton";
-import { useMemo, useState} from "react";
+import { useMemo, useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -19,8 +20,10 @@ import { useMemo, useState} from "react";
 
 export default function SongDetail() {
   const routerLocation = useLocation(); // ← เปลี่ยนชื่อกันชน
+  const navigate = useNavigate();
   const song = (routerLocation.state as { song?: Song } | null)?.song ?? demoSong;
   const image = (routerLocation.state as { image?: string } | null)?.image ?? song.song_transcriber;
+  const from = (routerLocation.state as any)?.from;
   console.log("SongDetail song:", song);
   const [tab, setTab] = useState<TabKey>("lyrics");
   console.log("Image URL:", song.chord_image);
@@ -46,6 +49,12 @@ export default function SongDetail() {
     setTimeout(() => setCopied(null), 1500);
   };
 
+  useEffect(() => {
+    if (from !== "internal") {
+      console.warn("⛔ Access denied: direct access not allowed");
+      navigate("/", { replace: true }); // redirect กลับหน้าแรก
+    }
+  }, [from, navigate]);
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
     

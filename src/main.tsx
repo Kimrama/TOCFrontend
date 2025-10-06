@@ -6,7 +6,7 @@ import SongDetail from './pages/songdetail'
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
-  { path: '/song/:id', element: <SongDetail  /> },
+  { path: '/song/:id', element: <SongDetail/> },
 ])
 
 createRoot(document.getElementById('root')!).render(

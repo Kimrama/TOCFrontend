@@ -91,6 +91,7 @@ function Index() {
         >
           {
             popularSongs.map((song, index) => (
+              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{ from: "internal", song: song , image: song.song_transcriber}}>
               <SongCard
                 key={index}
                 title={song.song}
@@ -98,6 +99,7 @@ function Index() {
                 views={song.views}
                 image={song.song_transcriber}
               />
+              </Link>
             ))
           }
         </Section>
@@ -110,7 +112,7 @@ function Index() {
         >
           {
             songs.map((song, index) => (
-              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{ song: song , image: song.song_transcriber}}>
+              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{from: "internal", song: song , image: song.song_transcriber}}>
               <SongCard
                 key={index}
                 title={song.song}
