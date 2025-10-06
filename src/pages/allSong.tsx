@@ -11,16 +11,20 @@ function AllSong() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [isNext, setIsNext] = useState(false);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchAllSongs(page: number, query: string = "") {
+  async function fetchAllSongs(
+    page: number,
+    query: string = "",
+    size: number = pageSize
+  ) {
     setLoading(true);
     try {
       const response: SongResponse = await fetchSongs({
         page,
-        page_size: pageSize,
+        page_size: size,
         popular: false,
         song: query,
       });
@@ -35,20 +39,20 @@ function AllSong() {
   }
 
   useEffect(() => {
-    fetchAllSongs(1, "");
+    fetchAllSongs(1, "", pageSize);
     setPage(1);
-  }, []);
+  }, [pageSize]);
 
   useEffect(() => {
-    fetchAllSongs(1, searchQuery);
+    fetchAllSongs(1, searchQuery, pageSize);
     setPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, pageSize]);
 
   const handleNextPage = () => {
     if (isNext) {
       const nextPage = page + 1;
       setPage(nextPage);
-      fetchAllSongs(nextPage, searchQuery);
+      fetchAllSongs(nextPage, searchQuery, pageSize);
     }
   };
 
@@ -56,7 +60,7 @@ function AllSong() {
     if (page > 1) {
       const prevPage = page - 1;
       setPage(prevPage);
-      fetchAllSongs(prevPage, searchQuery);
+      fetchAllSongs(prevPage, searchQuery, pageSize);
     }
   };
   async function exportCSV() {
@@ -121,22 +125,43 @@ function AllSong() {
               </Link>
             ))}
           </div>
-          <div className="flex justify-center items-center gap-4 mt-8">
-            <button
-              onClick={handlePrevPage}
-              disabled={page === 1 || loading}
-              className="px-4 py-2 w-24 rounded bg-accent text-white disabled:bg-gray-300"
-            >
-              Previous
-            </button>
-            <span>Page {page}</span>
-            <button
-              onClick={handleNextPage}
-              disabled={!isNext || loading}
-              className="px-4 py-2 w-24 rounded bg-accent text-white disabled:bg-gray-300"
-            >
-              Next
-            </button>
+          <div className="flex flex-col items-center gap-4 mt-8">
+            <div className="flex justify-center items-center gap-4">
+              <button
+                onClick={handlePrevPage}
+                disabled={page === 1 || loading}
+                className="border px-4 w-24 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer"
+              >
+                Previous
+              </button>
+              <span>Page {page}</span>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="page-size"
+                  className="text-sm text-muted-foreground"
+                >
+                  Page Size:
+                </label>
+                <select
+                  id="page-size"
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  className="border rounded px-2 py-1 text-sm"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+              <button
+                onClick={handleNextPage}
+                disabled={!isNext || loading}
+                className="border px-4 w-24 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </main>
