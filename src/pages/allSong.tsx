@@ -113,7 +113,7 @@ function AllSong() {
             {songs.map((song, index) => (
               <Link
                 to={`/song/${encodeURIComponent(song.song)}`}
-                state={{ song }}
+                state={{ from: "internal", song }}
                 key={index}
               >
                 <SongCard
