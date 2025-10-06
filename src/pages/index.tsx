@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSongs } from "../api/song";
+import { fetchSongs, loadCSV } from "../api/song";
 import type { Song, SongResponse } from "../interface/song";
 import { Music4, Eye } from "lucide-react";
 import SearchComponent from "../components/SearchComponent";
@@ -56,6 +56,22 @@ function Index() {
       setLoading(false);
     }
   }
+
+  async function exportCSV() {
+    const response = await loadCSV()
+
+    const url = window.URL.createObjectURL(new Blob([response]));
+    const link = document.createElement("a");
+    link.href = url;
+
+    link.setAttribute("download", "songs_page.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
   useEffect(() => {
     fetchPopularSongs(popularPage);
     fetchAllSongs(1, "");
@@ -101,7 +117,7 @@ function Index() {
               </div>
             </div>
             <div className="border px-4 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer">
-              <button>Export This Page</button>
+              <button onClick={() => exportCSV()}>Export This Page</button>
             </div>
           </div>
           <SearchComponent
