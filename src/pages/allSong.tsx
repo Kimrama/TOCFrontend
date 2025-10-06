@@ -27,6 +27,7 @@ function AllSong() {
         page_size: size,
         popular: false,
         song: query,
+        singer: query,
       });
       setSongs(response.songs);
       setIsNext(response.is_next);
@@ -101,6 +102,7 @@ function AllSong() {
           <SearchComponent
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            placeholder="Search by track or singer name"
           />
           {/* <FilterComponent /> */}
         </div>

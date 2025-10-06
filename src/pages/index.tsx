@@ -43,6 +43,7 @@ function Index() {
         page_size: pageSize,
         popular: false,
         song: query,
+        singer: query,
       });
       if (page === 1) {
         setSongs(response.songs);
@@ -123,6 +124,7 @@ function Index() {
           <SearchComponent
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            placeholder="Search by track or singer name"
           />
           {/* <FilterComponent /> */}
         </div>

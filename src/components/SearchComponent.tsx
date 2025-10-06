@@ -5,11 +5,13 @@ import { Input } from "../UI/Input";
 interface SearchComponentProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  placeholder?: string;
 }
 
 function SearchComponent({
   searchQuery,
   setSearchQuery,
+  placeholder = "Search by track name",
 }: SearchComponentProps) {
   const onSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -19,7 +21,7 @@ function SearchComponent({
       <div className="relative">
         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
         <Input
-          placeholder="Search by track name"
+          placeholder={placeholder}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-12 h-12 bg-input border-border/50 focus:border-black text-black placeholder:text-muted-foreground text-base"
