@@ -1,9 +1,8 @@
-
-import { ArrowLeft, Eye, FileText, Guitar, User } from "lucide-react";
+import { ArrowLeft, Eye, FileText, Guitar, Music4, User } from "lucide-react";
 
 import type { TabKey } from "../interface/song";
 import { demoSong } from "../data/demoSong";
-import type {Song} from "../interface/song"
+import type { Song } from "../interface/song";
 
 import { useLocation, Link } from "react-router-dom";
 import PageFooter from "../UI/PageFooter";
@@ -11,18 +10,17 @@ import Cover from "../UI/Cover";
 import Badge from "../UI/Badge";
 import Stat from "../UI/Stat";
 import CopyButton from "../UI/CopyButton";
-import { useMemo, useState, useEffect} from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-
-
-
 
 export default function SongDetail() {
   const routerLocation = useLocation(); // ← เปลี่ยนชื่อกันชน
   const navigate = useNavigate();
-  const song = (routerLocation.state as { song?: Song } | null)?.song ?? demoSong;
-  const image = (routerLocation.state as { image?: string } | null)?.image ?? song.song_transcriber;
+  const song =
+    (routerLocation.state as { song?: Song } | null)?.song ?? demoSong;
+  const image =
+    (routerLocation.state as { image?: string } | null)?.image ??
+    song.song_transcriber;
   const from = (routerLocation.state as any)?.from;
   console.log("SongDetail song:", song);
   const [tab, setTab] = useState<TabKey>("lyrics");
@@ -37,10 +35,6 @@ export default function SongDetail() {
     if (cb) u.searchParams.set("cb", String(cb)); // เพิ่มเฉพาะตอน reload
     return u.toString();
   }, [song.chord_image, cb]);
-
-
-
-
 
   // const handleExport = () => window.print();
 
@@ -57,16 +51,35 @@ export default function SongDetail() {
   }, [from, navigate]);
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-    
-
+      <header className="bg-card border-b border-border/30 shadow-sm">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-between mb-8">
+            <Link to={"/"}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg">
+                  <Music4 className="text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground">
+                    LyricDB
+                  </h1>
+                  <p className="text-muted-foreground">
+                    Discover amazing lyric&chord collection with RegEx
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </header>
       <main className="mx-auto max-w-6xl px-4 py-8 md:px-6">
         {/* Back + breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-sm text-neutral-600">
           <Link
-              to="/"
-              className="inline-flex items-center gap-2 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300 rounded-md px-1"
-              aria-label="Back to songs"
-            >
+            to="/"
+            className="inline-flex items-center gap-2 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-300 rounded-md px-1"
+            aria-label="Back to songs"
+          >
             <ArrowLeft size={16} />
             <span>Back to songs</span>
           </Link>
@@ -146,15 +159,15 @@ export default function SongDetail() {
                   )}
                 </div>
               </div>
-              
+
               <div className="border-t border-neutral-200 p-6">
-                  {tab === "lyrics" ? (
-                    <pre className="whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-neutral-900">
-                      {song.lyrics}
-                    </pre>
-                  ) : (
-                    <div className="space-y-3">
-                      
+                {tab === "lyrics" ? (
+                  <pre className="whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-neutral-900">
+                    {song.lyrics}
+                  </pre>
+                ) : (
+                  <div className="space-y-3">
+                    {song.chord_image !== "" ? (
                       <img
                         src={song.chord_image}
                         alt="Chord"
@@ -162,10 +175,12 @@ export default function SongDetail() {
                         loading="lazy"
                         style={{ maxWidth: "100%", borderRadius: "8px" }}
                       />
-
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-neutral-600">No chord available.</p>
+                    )}
                   </div>
+                )}
+              </div>
             </div>
           </div>
         </section>

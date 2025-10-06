@@ -22,15 +22,21 @@ function AllSong() {
   ) {
     setLoading(true);
     try {
-      const response: SongResponse = await fetchSongs({
+      const responseBySong: SongResponse = await fetchSongs({
         page,
         page_size: size,
         popular: false,
         song: query,
+      });
+      const responseBySinger: SongResponse = await fetchSongs({
+        page,
+        page_size: size,
+        popular: false,
         singer: query,
       });
-      setSongs(response.songs);
-      setIsNext(response.is_next);
+      const songResult = responseBySong.songs.concat(responseBySinger.songs);
+      setSongs(songResult);
+      setIsNext(responseBySong.is_next && responseBySinger.is_next);
       setError(null);
     } catch (err) {
       setError("Failed to fetch songs");
@@ -84,17 +90,21 @@ function AllSong() {
       <header className="bg-card border-b border-border/30 shadow-sm">
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg">
-                <Music4 className="text-white" />
+            <Link to={"/"}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg">
+                  <Music4 className="text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-foreground">
+                    LyricDB
+                  </h1>
+                  <p className="text-muted-foreground">
+                    Discover amazing lyric&chord collection with RegEx
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">LyricDB</h1>
-                <p className="text-muted-foreground">
-                  Discover amazing lyric&chord collection with RegEx
-                </p>
-              </div>
-            </div>
+            </Link>
             <div className="border px-4 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer">
               <button onClick={() => exportCSV()}>Export This Page</button>
             </div>
