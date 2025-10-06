@@ -8,7 +8,7 @@ export const demoSong: Song = {
 song: "Midnight Frequencies",
 singer: "Neon Pulse",
 views: 12500,
-chords_image: "https://chordtabs.in.th/img/nm/56633.png", // ใช้กราเดียนท์แทนรูปจริง
+chord_image: "https://chordtabs.in.th/img/nm/56633.png", // ใช้กราเดียนท์แทนรูปจริง
 lyrics: `
 City lights flicker in my eyes
 
