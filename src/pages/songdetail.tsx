@@ -1,29 +1,43 @@
-import { useEffect, useState } from "react";
+
 import { ArrowLeft, Eye, FileText, Guitar, User } from "lucide-react";
 
 import type { TabKey } from "../interface/song";
 import { demoSong } from "../data/demoSong";
+import type {Song} from "../interface/song"
 
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import PageFooter from "../UI/PageFooter";
 import Cover from "../UI/Cover";
 import Badge from "../UI/Badge";
 import Stat from "../UI/Stat";
 import CopyButton from "../UI/CopyButton";
+import { useMemo, useState} from "react";
+
+
+
+
 
 export default function SongDetail() {
+  const routerLocation = useLocation(); // ← เปลี่ยนชื่อกันชน
+  const song = (routerLocation.state as { song?: Song } | null)?.song ?? demoSong;
+  const image = (routerLocation.state as { image?: string } | null)?.image ?? song.song_transcriber;
+  console.log("SongDetail song:", song);
   const [tab, setTab] = useState<TabKey>("lyrics");
-  const [views, setViews] = useState(0);
-  const [copied, setCopied] = useState<null | TabKey>(null);
+  console.log("Image URL:", song.chord_image);
 
-  // นับผู้เข้าชม (localStorage)
-  useEffect(() => {
-    const key = `lyricdb:views:${demoSong.song}`;
-    const n = parseInt(localStorage.getItem(key) || "0");
-    const next = n + 1;
-    setViews(next);
-    localStorage.setItem(key, String(next));
-  }, []);
+  const [copied, setCopied] = useState<null | TabKey>(null);
+  const [cb, setCb] = useState(0);
+
+  const imgSrc = useMemo(() => {
+    // ใช้ window.location.origin เสมอ (อย่าใช้ตัวแปร useLocation)
+    const u = new URL(song.chord_image, window.location.origin);
+    if (cb) u.searchParams.set("cb", String(cb)); // เพิ่มเฉพาะตอน reload
+    return u.toString();
+  }, [song.chord_image, cb]);
+
+
+
+
 
   // const handleExport = () => window.print();
 
@@ -48,31 +62,31 @@ export default function SongDetail() {
             <span>Back to songs</span>
           </Link>
           <span className="mx-1">/</span>
-          <span className="font-medium text-neutral-900">{demoSong.song}</span>
+          <span className="font-medium text-neutral-900">{song.song}</span>
         </div>
 
         <section className="grid grid-cols-1 gap-6 md:grid-cols-[260px,1fr]">
           {/* Left: Cover & meta */}
           <div className="space-y-4">
-            <Cover coverUrl={demoSong.song_transcriber} />
+            <Cover coverUrl={image} />
 
             <div className="grid grid-cols-2 gap-3">
-              <Badge icon={User} label={demoSong.singer} />
+              <Badge icon={User} label={song.singer} />
             </div>
 
-            <Stat icon={Eye} value={views.toLocaleString()} hint="Views" />
+            <Stat icon={Eye} value={song.views.toLocaleString()} hint="Views" />
           </div>
 
           {/* Right: Title & tabs */}
           <div className="space-y-5">
             <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-                {demoSong.song}
+                {song.song}
               </h1>
               <p className="mt-1 text-neutral-600">
                 by{" "}
                 <span className="font-medium text-neutral-800">
-                  {demoSong.singer}
+                  {song.singer}
                 </span>
               </p>
             </div>
@@ -106,13 +120,13 @@ export default function SongDetail() {
                 <div className="ml-auto flex items-center gap-2 pr-2">
                   {tab === "lyrics" ? (
                     <CopyButton
-                      text={demoSong.lyrics}
+                      text={song.lyrics}
                       label="Copy lyrics"
                       onCopied={() => onCopied("lyrics")}
                     />
                   ) : (
                     <CopyButton
-                      text={demoSong.chords_image}
+                      text={song.chord_image}
                       label="Copy chords"
                       onCopied={() => onCopied("chords")}
                     />
@@ -125,16 +139,24 @@ export default function SongDetail() {
               </div>
               
               <div className="border-t border-neutral-200 p-6">
-                {tab === "lyrics" ? (
-                  <pre className="whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-neutral-900">
-                    {demoSong.lyrics}
-                  </pre>
-                ) : (
-                  <pre className="whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-neutral-900">
-                    <img src={demoSong.chords_image} ></img>
-                  </pre>
-                )}
-              </div>
+                  {tab === "lyrics" ? (
+                    <pre className="whitespace-pre-wrap break-words font-mono text-[15px] leading-relaxed text-neutral-900">
+                      {song.lyrics}
+                    </pre>
+                  ) : (
+                    <div className="space-y-3">
+                      
+                      <img
+                        src={song.chord_image}
+                        alt="Chord"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        style={{ maxWidth: "100%", borderRadius: "8px" }}
+                      />
+
+                    </div>
+                  )}
+                  </div>
             </div>
           </div>
         </section>

@@ -12,3 +12,11 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <RouterProvider router={router} />
 )
+// src/main.tsx
+// ... โค้ด mount React ของคุณ
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .catch((err) => console.error("SW register failed:", err));
+  });
+}

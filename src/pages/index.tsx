@@ -6,6 +6,7 @@ import SearchComponent from '../components/SearchComponent';
 import { FilterComponent } from '../components/FilterComponent';
 import { SongCard } from '../UI/SongCard';
 import { Section } from '../UI/Section';
+import { Link } from 'react-router-dom';
 
 function Index() {
   const [popularSongs, setPopularSongs] = useState<Song[]>([]);
@@ -109,6 +110,7 @@ function Index() {
         >
           {
             songs.map((song, index) => (
+              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{ song: song , image: song.song_transcriber}}>
               <SongCard
                 key={index}
                 title={song.song}
@@ -116,6 +118,7 @@ function Index() {
                 views={song.views}
                 image={song.song_transcriber}
               />
+              </Link>
             ))
           }
         </Section>
