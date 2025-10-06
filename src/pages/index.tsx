@@ -1,9 +1,7 @@
-// src/pages/Index.tsx
-
 import { useEffect, useState } from 'react';
 import { fetchSongs } from '../api/song';
-import type { Song, SongQuery, SongResponse } from '../interface/song';
-import { Music4, Eye, Star, Clock } from 'lucide-react'
+import type { Song, SongResponse } from '../interface/song';
+import { Music4, Eye } from 'lucide-react'
 import SearchComponent from '../components/SearchComponent';
 import { FilterComponent } from '../components/FilterComponent';
 import { SongCard } from '../UI/SongCard';
@@ -46,7 +44,7 @@ function Index() {
   useEffect(() => {
     fetchPopularSongs(popularPage);
     fetchAllSongs(songsPage);
-  }, []); 
+  }, []);
 
   const handleNextPopularPage = () => {
     const nextPage = popularPage + 1;
@@ -91,9 +89,9 @@ function Index() {
           onNextPage={handleNextPopularPage}
         >
           {
-            popularSongs.map((song, index) => ( 
+            popularSongs.map((song, index) => (
               <SongCard
-                key={index} 
+                key={index}
                 title={song.song}
                 singer={song.singer}
                 views={song.views}
@@ -106,7 +104,7 @@ function Index() {
         <Section
           title="Songs"
           subtitle="Browse the rest of the tracks"
-          icon={<Music4 />} 
+          icon={<Music4 />}
           onNextPage={handleNextSongsPage}
         >
           {

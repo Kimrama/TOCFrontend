@@ -92,7 +92,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
     font-feature-settings: "cv02","cv03","cv04","cv11";
   }
 }
