@@ -15,25 +15,25 @@ export function SongCard({
 }: SongCardProps) {
   return (
     <Card
-      className="flex items-start gap-4 min-w-[260px] shrink-0 p-3 rounded-xl bg-card border border-border/50 text-card-foreground shadow-sm transition-transform duration-200 hover:-translate-y-0.5"
+      className="flex items-center gap-4 w-[260px] h-[110px] shrink-0 p-3 rounded-xl bg-card border border-border/50 text-card-foreground shadow-sm transition-transform duration-200 hover:-translate-y-0.5"
     >
-      {/* Thumbnail ทางซ้าย */}
       <img
         src={image}
         alt={title}
-        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+        className="w-16 h-16 rounded-lg object-fit flex-shrink-0"
       />
+      <div className="flex flex-col justify-between flex-1 h-full min-w-0">
+        <div>
+          <h3 className="text-sm font-semibold text-foreground leading-tight line-clamp-2">
+            {title}
+          </h3>
+          <p className="text-xs text-muted-foreground truncate">
+            {singer}
+          </p>
+        </div>
 
-      {/* ข้อมูลทางขวา */}
-      <div className="flex flex-col">
-        <h3 className="text-sm font-semibold text-foreground leading-tight">
-          {title}
-        </h3>
-
-        <p className="text-xs text-muted-foreground ">{singer}</p>
-
-        <p className="text-xs text-muted-foreground mt-3">
-          <span>{views} views</span>
+        <p className="text-xs text-muted-foreground">
+          {views.toLocaleString()} views
         </p>
       </div>
     </Card>
