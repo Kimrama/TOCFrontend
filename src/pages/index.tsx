@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSongs } from "../api/song";
+import { fetchSongs, loadCSV } from "../api/song";
 import type { Song, SongResponse } from "../interface/song";
 import { Music4, Eye } from "lucide-react";
 import SearchComponent from "../components/SearchComponent";
@@ -16,6 +16,7 @@ function Index() {
   const pageSize = 10;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function fetchPopularSongs(page: number) {
     setLoading(true);
@@ -34,15 +35,20 @@ function Index() {
     }
   }
 
-  async function fetchAllSongs(page: number) {
+  async function fetchAllSongs(page: number, query: string = "") {
     setLoading(true);
     try {
       const response: SongResponse = await fetchSongs({
         page,
         page_size: pageSize,
         popular: false,
+        song: query,
       });
-      setSongs((prevSongs) => [...prevSongs, ...response.songs]);
+      if (page === 1) {
+        setSongs(response.songs);
+      } else {
+        setSongs((prevSongs) => [...prevSongs, ...response.songs]);
+      }
       setError(null);
     } catch (err) {
       setError("Failed to fetch songs");
@@ -50,10 +56,37 @@ function Index() {
       setLoading(false);
     }
   }
+
+  async function exportCSV() {
+    const response = await loadCSV();
+
+    const url = window.URL.createObjectURL(new Blob([response]));
+    const link = document.createElement("a");
+    link.href = url;
+
+    link.setAttribute("download", "songs_page.csv");
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
   useEffect(() => {
     fetchPopularSongs(popularPage);
-    fetchAllSongs(songsPage);
+    fetchAllSongs(1, "");
+    setSongsPage(1);
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      fetchAllSongs(1, "");
+      setSongsPage(1);
+    } else {
+      fetchAllSongs(1, searchQuery);
+      setSongsPage(1);
+    }
+  }, [searchQuery]);
 
   const handleNextPopularPage = () => {
     const nextPage = popularPage + 1;
@@ -64,7 +97,7 @@ function Index() {
   const handleNextSongsPage = () => {
     const nextPage = songsPage + 1;
     setSongsPage(nextPage);
-    fetchAllSongs(nextPage);
+    fetchAllSongs(nextPage, searchQuery);
   };
 
   return (
@@ -84,11 +117,14 @@ function Index() {
               </div>
             </div>
             <div className="border px-4 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer">
-              <button>Export This Page</button>
+              <button onClick={() => exportCSV()}>Export This Page</button>
             </div>
           </div>
-          <SearchComponent />
-          <FilterComponent />
+          <SearchComponent
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+          {/* <FilterComponent /> */}
         </div>
       </header>
       <main className="bg-gray-50">
