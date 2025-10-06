@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { fetchSongs } from '../api/song';
-import type { Song, SongResponse } from '../interface/song';
-import { Music4, Eye } from 'lucide-react'
-import SearchComponent from '../components/SearchComponent';
-import { FilterComponent } from '../components/FilterComponent';
-import { SongCard } from '../UI/SongCard';
-import { Section } from '../UI/Section';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { fetchSongs } from "../api/song";
+import type { Song, SongResponse } from "../interface/song";
+import { Music4, Eye } from "lucide-react";
+import SearchComponent from "../components/SearchComponent";
+import { FilterComponent } from "../components/FilterComponent";
+import { SongCard } from "../UI/SongCard";
+import { Section } from "../UI/Section";
+import { Link } from "react-router-dom";
 
 function Index() {
   const [popularSongs, setPopularSongs] = useState<Song[]>([]);
@@ -16,36 +16,61 @@ function Index() {
   const pageSize = 10;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function fetchPopularSongs(page: number) {
     setLoading(true);
     try {
-      const response: SongResponse = await fetchSongs({ page, page_size: pageSize, popular: true });
-      setPopularSongs(prevSongs => [...prevSongs, ...response.songs]);
+      const response: SongResponse = await fetchSongs({
+        page,
+        page_size: pageSize,
+        popular: true,
+      });
+      setPopularSongs((prevSongs) => [...prevSongs, ...response.songs]);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch popular songs');
+      setError("Failed to fetch popular songs");
     } finally {
       setLoading(false);
     }
   }
 
-  async function fetchAllSongs(page: number) {
+  async function fetchAllSongs(page: number, query: string = "") {
     setLoading(true);
     try {
-      const response: SongResponse = await fetchSongs({ page, page_size: pageSize, popular: false });
-      setSongs(prevSongs => [...prevSongs, ...response.songs]);
+      const response: SongResponse = await fetchSongs({
+        page,
+        page_size: pageSize,
+        popular: false,
+        song: query,
+      });
+      if (page === 1) {
+        setSongs(response.songs);
+      } else {
+        setSongs((prevSongs) => [...prevSongs, ...response.songs]);
+      }
       setError(null);
     } catch (err) {
-      setError('Failed to fetch songs');
+      setError("Failed to fetch songs");
     } finally {
       setLoading(false);
     }
   }
   useEffect(() => {
     fetchPopularSongs(popularPage);
-    fetchAllSongs(songsPage);
+    fetchAllSongs(1, "");
+    setSongsPage(1);
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      fetchAllSongs(1, "");
+      setSongsPage(1);
+    } else {
+      fetchAllSongs(1, searchQuery);
+      setSongsPage(1);
+    }
+  }, [searchQuery]);
 
   const handleNextPopularPage = () => {
     const nextPage = popularPage + 1;
@@ -56,9 +81,8 @@ function Index() {
   const handleNextSongsPage = () => {
     const nextPage = songsPage + 1;
     setSongsPage(nextPage);
-    fetchAllSongs(nextPage);
+    fetchAllSongs(nextPage, searchQuery);
   };
-
 
   return (
     <div className="flex min-h-screen flex-col ">
@@ -71,15 +95,20 @@ function Index() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">LyricDB</h1>
-                <p className="text-muted-foreground">Discover amazing lyric&chord collection with RegEx</p>
+                <p className="text-muted-foreground">
+                  Discover amazing lyric&chord collection with RegEx
+                </p>
               </div>
             </div>
             <div className="border px-4 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer">
               <button>Export This Page</button>
             </div>
           </div>
-          <SearchComponent />
-          <FilterComponent />
+          <SearchComponent
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+          {/* <FilterComponent /> */}
         </div>
       </header>
       <main className="bg-gray-50">
@@ -89,9 +118,15 @@ function Index() {
           icon={<Eye />}
           onNextPage={handleNextPopularPage}
         >
-          {
-            popularSongs.map((song, index) => (
-              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{ from: "internal", song: song , image: song.song_transcriber}}>
+          {popularSongs.map((song, index) => (
+            <Link
+              to={`/song/${encodeURIComponent(song.song)}`}
+              state={{
+                from: "internal",
+                song: song,
+                image: song.song_transcriber,
+              }}
+            >
               <SongCard
                 key={index}
                 title={song.song}
@@ -99,9 +134,8 @@ function Index() {
                 views={song.views}
                 image={song.song_transcriber}
               />
-              </Link>
-            ))
-          }
+            </Link>
+          ))}
         </Section>
 
         <Section
@@ -110,9 +144,15 @@ function Index() {
           icon={<Music4 />}
           onNextPage={handleNextSongsPage}
         >
-          {
-            songs.map((song, index) => (
-              <Link to={`/song/${encodeURIComponent(song.song)}`} state={{from: "internal", song: song , image: song.song_transcriber}}>
+          {songs.map((song, index) => (
+            <Link
+              to={`/song/${encodeURIComponent(song.song)}`}
+              state={{
+                from: "internal",
+                song: song,
+                image: song.song_transcriber,
+              }}
+            >
               <SongCard
                 key={index}
                 title={song.song}
@@ -120,9 +160,8 @@ function Index() {
                 views={song.views}
                 image={song.song_transcriber}
               />
-              </Link>
-            ))
-          }
+            </Link>
+          ))}
         </Section>
       </main>
     </div>
