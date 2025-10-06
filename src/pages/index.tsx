@@ -58,7 +58,7 @@ function Index() {
   }
 
   async function exportCSV() {
-    const response = await loadCSV()
+    const response = await loadCSV();
 
     const url = window.URL.createObjectURL(new Blob([response]));
     const link = document.createElement("a");
@@ -70,7 +70,7 @@ function Index() {
 
     link.parentNode?.removeChild(link);
     window.URL.revokeObjectURL(url);
-}
+  }
 
   useEffect(() => {
     fetchPopularSongs(popularPage);
@@ -127,7 +127,7 @@ function Index() {
           {/* <FilterComponent /> */}
         </div>
       </header>
-      <main className="bg-gray-50">
+      <main className="">
         <Section
           title="Popular Songs"
           subtitle="Tracks that are trending and most played"
@@ -142,9 +142,9 @@ function Index() {
                 song: song,
                 image: song.song_transcriber,
               }}
+              key={index}
             >
               <SongCard
-                key={index}
                 title={song.song}
                 singer={song.singer}
                 views={song.views}
@@ -168,9 +168,9 @@ function Index() {
                 song: song,
                 image: song.song_transcriber,
               }}
+              key={index}
             >
               <SongCard
-                key={index}
                 title={song.song}
                 singer={song.singer}
                 views={song.views}
@@ -179,6 +179,14 @@ function Index() {
             </Link>
           ))}
         </Section>
+
+        <div className="flex justify-center my-8 mx-auto px-6 py-10 w-full bg-white">
+          <Link to="/allSong">
+            <button className="border px-4 py-2 rounded-lg hover:bg-accent hover:shadow-md transition cursor-pointer">
+              View All Songs
+            </button>
+          </Link>
+        </div>
       </main>
     </div>
   );
