@@ -1,5 +1,5 @@
 import axios from "axios";
-import type{ SongQuery, SongResponse} from "../interface/song";
+import type { SongQuery, SongResponse } from "../interface/song";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -14,4 +14,12 @@ export async function fetchSongs(query: SongQuery): Promise<SongResponse> {
     const response = await axios.get(`${BASE_URL}/songs`, { params: query });
     return response.data;
 
+}
+
+export async function loadCSV(): Promise<any> {
+    const response = await axios.get(`${BASE_URL}/songs/csv`, {
+        responseType: "blob"
+    });
+
+    return response.data;
 }
